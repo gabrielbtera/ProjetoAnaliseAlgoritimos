@@ -1,0 +1,1 @@
+arquivo = open("teste.txt", "r")
