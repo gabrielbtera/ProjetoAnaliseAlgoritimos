@@ -126,7 +126,6 @@ def merge(lista, inicio, meio, fim):
             lista[k] = left[head_left]
             head_left += 1
         elif left[head_left][2] < rigth[head_rigth][2]:
-            print('entrou')
             lista[k] = rigth[head_rigth]
             head_rigth += 1
 
@@ -160,12 +159,8 @@ def main(args) -> None:
     listaAtualizada = dados[0]
     inicio, fim = dados[1] , dados[1] + dados[2]
 
-    print(listaAtualizada)
-    print(inicio)
-    print(fim)
-    print(listaAtualizada)
+    
     mergeSort(listaAtualizada, inicio, fim)
-    print(listaAtualizada)
 
     arquivoSaida = open('saida.txt', 'w')
     for indiceDado in range(fim):
@@ -173,8 +168,8 @@ def main(args) -> None:
             conteiner = listaAtualizada[indiceDado]
             arquivoSaida.write(f'{conteiner[0]} {conteiner[3]}Kg ({conteiner[2]}%)\n')
 
-        else:
-            print(listaAtualizada[indiceDado])
+        # else:
+        #     print(listaAtualizada[indiceDado])
            
 
         
