@@ -85,7 +85,7 @@ def ordenaPeloCNPJEextraipercentual(listaPivo, dicAnalisado):
         if (conteinerAnalisado):
             percentualPeso, diferenca = percentuaDedoisnumeros(conteinerAnalisado[1], conteinerPivot[2])
             if (conteinerAnalisado[0] != conteinerPivot[1]):
-                lista.append([conteinerPivot[0], conteinerAnalisado[0], conteinerAnalisado[1]])
+                lista.append([conteinerPivot[0],conteinerPivot[1], conteinerAnalisado[0], conteinerAnalisado[1]])
                 contador1 += 1
             elif (percentualPeso > 10):
                 lista2.append([conteinerPivot[0], conteinerAnalisado[0], percentualPeso, diferenca])
@@ -99,7 +99,6 @@ def ordenaPeloCNPJEextraipercentual(listaPivo, dicAnalisado):
 def mergeSort(lista, inicio, fim):
     if (fim - inicio) > 1:
         meio = (fim + inicio) // 2
-        print('meio', meio)
         mergeSort(lista, inicio, meio) 
         mergeSort(lista, meio, fim) 
         merge(lista, inicio, meio, fim)
@@ -166,11 +165,11 @@ def main(args) -> None:
     for indiceDado in range(fim):
         if indiceDado >= inicio:
             conteiner = listaAtualizada[indiceDado]
-            arquivoSaida.write(f'{conteiner[0]} {conteiner[3]}Kg ({conteiner[2]}%)\n')
+            arquivoSaida.write(f'{conteiner[0]}: {conteiner[3]}Kg ({conteiner[2]}%)\n')
 
-        # else:
-        #     print(listaAtualizada[indiceDado])
-           
+        else:
+            conteiner = listaAtualizada[indiceDado]
+            arquivoSaida.write(f'{conteiner[0]}: {conteiner[1]}<->{conteiner[2]}\n')
 
         
     #
