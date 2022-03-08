@@ -45,11 +45,6 @@ from time import time
 
 # print('total', fim-inicio)
 
-def acha_indices(arquivo) -> int:
-    numero = int(arquivo[0])
-    achado = int(arquivo[int(numero) + 1])
-    return achado
-
 def primeiraParte(arquivo):
     numeroPrimeira = int(arquivo[0])
     conteiners = arquivo[1: numeroPrimeira + 1]
@@ -128,12 +123,9 @@ def merge(lista, inicio, meio, fim):
             lista[k] = rigth[head_rigth]
             head_rigth += 1
 
+
+
                     
-
-
-    
-
-
 def main(args) -> None:
     #Ilustrando uso de argumentos de programa
     # print("#ARGS = %i"%len((args)))
@@ -146,10 +138,7 @@ def main(args) -> None:
 
     
     arquivo = golden_input.read().split('\n')
-    
-    
 
-    acha_indices(arquivo)
     primeiraParteConteiners = primeiraParte(arquivo)
     segundaParteConteiners = segundaParte(arquivo)
 
