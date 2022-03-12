@@ -55,12 +55,14 @@ def primeiraParte(arquivo):
     
 
 def segundaParte(arquivo):
-    numeroSegunda = int(arquivo[0]) + 1
+    numeroSegunda = int(arquivo[0]) + 2
+
     dicSegundo  = {}
-    conteiners = arquivo[numeroSegunda + 1:]
+    conteiners = arquivo[numeroSegunda :]
     for conteiner in conteiners:
-        splitConteiner = conteiner.split(' ')
-        dicSegundo[splitConteiner[0]] = (splitConteiner[1], int(splitConteiner[2]))
+        if conteiner != '':
+            splitConteiner = conteiner.split(' ')
+            dicSegundo[splitConteiner[0]] = (splitConteiner[1], int(splitConteiner[2]))
     return dicSegundo
 
 def percentuaDedoisnumeros(numero1, numero2):
@@ -86,16 +88,26 @@ def ordenaPeloCNPJEextraipercentual(listaPivo, dicAnalisado):
                 lista2.append([conteinerPivot[0], conteinerAnalisado[0], percentualPeso, diferenca])
                 contador2 += 1
 
-    lista = lista + lista2
-    return lista, contador1, contador2
+    novaLista = []
+    tamanho = contador1 + contador2
+    cont = 0
+    for indice in range(tamanho):
+        if indice < contador1:
+            novaLista.append(lista[indice])
+        else:
+            novaLista.append(lista2[cont])
+            cont+=1
+        
+    return novaLista, contador1, contador2
 
 
 
-def mergeSort(lista, inicio, fim):
+def mergeXort(lista, inicio, fim):
     if (fim - inicio) > 1:
         meio = (fim + inicio) // 2
-        mergeSort(lista, inicio, meio) 
-        mergeSort(lista, meio, fim) 
+        
+        mergeXort(lista, inicio, meio) 
+        mergeXort(lista, meio, fim) 
         merge(lista, inicio, meio, fim)
 
 def merge(lista, inicio, meio, fim):
@@ -115,13 +127,13 @@ def merge(lista, inicio, meio, fim):
         elif head_rigth >= size_r:
             lista[k] = left[head_left]
             head_left += 1
-        elif left[head_left][2] > rigth[head_rigth][2]:
-            
-            lista[k] = left[head_left]
-            head_left += 1
         elif left[head_left][2] < rigth[head_rigth][2]:
             lista[k] = rigth[head_rigth]
+            
             head_rigth += 1
+        else:
+            lista[k] = left[head_left]
+            head_left += 1
 
 
 
@@ -147,8 +159,9 @@ def main(args) -> None:
     listaAtualizada = dados[0]
     inicio, fim = dados[1] , dados[1] + dados[2]
 
-    
-    mergeSort(listaAtualizada, inicio, fim)
+    print( '   antiga',listaAtualizada)
+    mergeXort(listaAtualizada, inicio, fim)
+    print('atualizada', listaAtualizada)
 
     arquivoSaida = open('saida.txt', 'w')
     for indiceDado in range(fim):

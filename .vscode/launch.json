@@ -5,6 +5,15 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Python: Arquivo Atual",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+
+    {
       "name": "gcc.exe - Criar e depurar o arquivo ativo",
       "type": "cppdbg",
       "request": "launch",
