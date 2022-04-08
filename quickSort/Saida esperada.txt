@@ -7,3 +7,28 @@
 
 
 (LP , LM , LA,)    (HP, HM, HA)
+
+
+
+
+# n = j - i + 1
+# v1 = i + (n / 4)
+# v2 = i + n / 2)
+# v3 = i + ((3 * n) / 4)
+
+# BRUNO OTAVIO PIEDADE PRADO15:04
+# v2
+# V[v3] == V[1]
+# BRUNO OTAVIO PIEDADE PRADO15:06
+# [V[v1], V[v2], V[v3]]
+# M[1]
+# M[1] == V[v1] -> v1
+# M[1] == V[v2] -> v2
+# BRUNO OTAVIO PIEDADE PRADO15:07
+# M[1] == V[v3] -> v3
+
+
+
+doc:
+py -m cProfile -o addition.prof quickSort.py entrada.txt output.txt
+python -m snakeviz addition.prof

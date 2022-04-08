@@ -66,10 +66,9 @@ def segundaParte(arquivo):
     return dicSegundo
 
 def percentuaDedoisnumeros(numero1, numero2):
-    if numero1 > numero2:
-        return round(((numero1 - numero2) / numero2) * 100), numero1 - numero2
+    diferenca = abs( numero1 - numero2 )
 
-    return round(((numero2 - numero1) / numero1) * 100), numero2 -numero1
+    return round(( 100  * diferenca )/ numero1), abs(numero1 - numero2)
 
 
 def ordenaPeloCNPJEextraipercentual(listaPivo, dicAnalisado):
@@ -80,7 +79,7 @@ def ordenaPeloCNPJEextraipercentual(listaPivo, dicAnalisado):
     for conteinerPivot  in listaPivo:
         conteinerAnalisado = dicAnalisado.get(conteinerPivot[0])
         if (conteinerAnalisado):
-            percentualPeso, diferenca = percentuaDedoisnumeros(conteinerAnalisado[1], conteinerPivot[2])
+            percentualPeso, diferenca = percentuaDedoisnumeros(conteinerPivot[2], conteinerAnalisado[1])
             if (conteinerAnalisado[0] != conteinerPivot[1]):
                 lista.append([conteinerPivot[0],conteinerPivot[1], conteinerAnalisado[0], conteinerAnalisado[1]])
                 contador1 += 1
@@ -145,7 +144,7 @@ def main(args) -> None:
     # print("ARG1 = %s, ARG2 = %s" %(args[1], args[2]))
 
     #Abrindo Arquivos
-    golden_input = open("teste.txt", 'r')
+    golden_input = open("porto.input.txt", 'r')
     golden_output = open("output.txt", 'w')
 
     
@@ -159,15 +158,15 @@ def main(args) -> None:
     listaAtualizada = dados[0]
     inicio, fim = dados[1] , dados[1] + dados[2]
 
-    print( '   antiga',listaAtualizada)
+    
     mergeXort(listaAtualizada, inicio, fim)
-    print('atualizada', listaAtualizada)
-
+    
     arquivoSaida = open('saida.txt', 'w')
     for indiceDado in range(fim):
         if indiceDado >= inicio:
             conteiner = listaAtualizada[indiceDado]
-            arquivoSaida.write(f'{conteiner[0]}: {conteiner[3]}Kg ({conteiner[2]}%)\n')
+            peso = f'{conteiner[3]}kg'
+            arquivoSaida.write(f'{conteiner[0]}: {peso} ({conteiner[2]}%)\n')
 
         else:
             conteiner = listaAtualizada[indiceDado]
