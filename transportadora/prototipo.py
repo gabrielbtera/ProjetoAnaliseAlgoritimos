@@ -1,6 +1,6 @@
-from audioop import reverse
 from copy import deepcopy
 from math import ceil
+from re import A
 import time
 
 
@@ -51,50 +51,75 @@ for t in range(intervalo +2 , intervalo + 2+ intMercadoria):
     dic = {"valor":  float(quebrado[1]), 
             "peso":  int(quebrado[2]),
             "volume": int(quebrado[3]), 
-            'SuaChave':quebrado[0]}
+            'SuaChave':quebrado[0],
+            'set': 0}
 
     listaItens.append(dic)
 
 listaItens = sorted(listaItens, key= lambda item: item['valor'], reverse=True)
 
-listaItensCopia = deepcopy(listaItens)
+#listaItensCopia = deepcopy(listaItens)
 
+print(listaItens)
 
+def minhaMax (a, b):
+    if a > b:
+        return a
+    return b
 
-
-
-
-def knapSack(W, wt, val, n, opcao):
+def knapSack(W,V , val, n, opcao):
 
     
-    K = [[0] * (W + 1) for _ in range(n + 1)]
+    K = [[[0] * (V + 1)]* (W + 1) for _ in range(n + 1)]
+    # print(K[5][50][100])
 
-    
 
-    for i in range(n + 1):
+    for i in range(1, n + 1 ):
+        
+        
         for w in range(W + 1):
-            if i == 0 or w == 0:
-                K[i][w] = 0
-            elif wt[i-1] <= w and val[i-1][opcao] >= 0:
-                K[i][w] = max(val[i-1][opcao] + K[i-1][w-wt[i-1]],  K[i-1][w])
-            else:
-                K[i][w] = K[i-1][w]
+            
+            for v in range (V + 1):
+               
+                
+                if w >= val[i-1]['peso'] and  v >= val[i-1]['volume']  and not val[i-1]["set"]:
+                    K[i][w][v] = max(K[i-1][w][v], 
+                    K[i-1][w - val[i-1]['peso']][v - val[i-1]['volume']] + val[i-1]['valor'])
+                    arquivoSaida.write(f"{K[i][w][v]}\nmeu {i} p{val[i-1]['peso']} pp {w} vv{v-val[i-1]['volume']} v{v}\n cond {w >= val[i-1]['peso'] and  v >= val[i-1]['volume']}\n")
+                    
+                else:
+                    K[i][w][v] = K[i-1][w][v]
+                    arquivoSaida.write(f"\nMeu iiii {i-1}\n")
 
-    i = n
-    j = W
+
+    i = n - 1
+    w = W
+    v = V
     lista = []
 
-    while 1:
-        if i-1 >=0 and K[i][j] != K[i-1][j]:
-            lista.append(i-1)
+    print(K[n][W][V])
+
+    while i >= 0:
+
+        if  K[i][w][v] != K[i-1][w][v]:
+            
+           
+            
+            lista.append(i)
+            w = w - val[i]['peso']
+            v = v - val[i]['volume']
             i -= 1
-            j = j - wt[i]
+            
+            
+
         else:
+            print("aqui")
             i-= 1
-        if (i < 0 and K[i] [j] == K[i-1] [j]):
-            break
+        
+   
+    print(lista)
   
-    return lista[::-1]
+    return lista
   
 
 def setta_1(lista, listaItem, flag):
@@ -122,26 +147,25 @@ def porcentagem(cap, uni):
         
 
 def verificaPesos(listaVeiculos, listaItens, listaItensCopia):
-    pesosPeso = [i['peso'] for i in listaItens]
-    pesosVolume =  [i['volume'] for i in listaItens]
-    
-    pendentes = []
-    naoPendentes = []
+
+
     for veiculo in listaVeiculos:
         peso = veiculo['peso']
         volume = veiculo['volume']
         placa = veiculo ['placa']
-        listaDicionarios = listaItens.copy()
+        # listaDicionarios = listaItens.copy()
 
-        valoresPesos = knapSack(peso, pesosPeso, listaDicionarios, intMercadoria, 'peso')
-        setta_1(valoresPesos, listaDicionarios, 'peso')
 
-        valoreVolumes = knapSack(volume, pesosVolume, listaDicionarios, intMercadoria, 'volume')
-        setta_1(valoreVolumes, listaDicionarios, 'volume')
-        juntos = intersecao(valoresPesos, valoreVolumes, pendentes, naoPendentes)
+        numeros = knapSack(peso, volume, listaItens, intMercadoria, "")
+
+        
+
+
+
+       
         # resultado = retornaDicionario(juntos, listaItensCopia)
-        imprimeValores(peso, volume, listaItensCopia, juntos, placa )
-    imprimePendentes(listaItensCopia, pendentes)
+        # imprimeValores(peso, volume, listaItensCopia, juntos, placa )
+    # imprimePendentes(listaItensCopia, pendentes)
         
 def imprimeValores(capacidadePeso, capacidadeVolume,listaCopia, lista, placa):
     somaPeso = 0
