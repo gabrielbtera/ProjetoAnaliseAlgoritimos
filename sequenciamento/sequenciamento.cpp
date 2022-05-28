@@ -7,85 +7,111 @@
 using namespace std;
 
 typedef struct{
-	string codigo;
-	uint32_t acerto;
-} sequencia;
+	string nomeDoenca;
+	uint32_t contador;
+} seqDoenca;
 
+
+uint32_t contadorAcertos(char *dnaPessoa, char *cadeiaDoenca, uint32_t initxs, uint32_t initys, uint32_t tamanhoCadeia){
+
+	uint32_t t = tamanhoCadeia, iteracao, acerto = 0;
+
+	for(iteracao = 0; iteracao < t ; iteracao ++ )
+		if(dnaPessoa[initxs + iteracao] != cadeiaDoenca[initys + iteracao])
+			return acerto;
+		else acerto++;
+	return acerto;
+}
 uint32_t nround(float n){return n + 0.5;}
-uint32_t count_matchs(char*, char*, uint32_t, uint32_t);
-sequencia **countingsort(sequencia**, uint32_t, uint32_t);
+seqDoenca **countingsort(seqDoenca**, uint32_t, uint32_t);
+
 
 int main(int argc, char *argv[]){
-	ifstream input(argv[1]);
-	ofstream output(argv[2]);
-  
-	uint32_t min, cases, inita, initb, matchs, acertos, genes, n;
-	char buffer[10000], *dna;
-	string temp;
-	
-	input >> min >> temp >> cases;
-	dna = (char*)temp.c_str();
-	
-	sequencia **sequencias = new sequencia*[cases];
+	ifstream entrada("entrada2.txt");
+	ofstream saida("saida2.txt");
 
-	for(uint32_t i = 0; i < cases; ++i){
-		sequencia *a = new sequencia;
-		input >> a->codigo >> n;
-		genes = 0;
-		for(uint32_t j = 0; j < n; ++j){
-			inita = 0;
-			initb = 0;
-			matchs = 0;
-			input >> buffer;
-			while(inita < (uint32_t)strlen(dna) && initb < (uint32_t)strlen(buffer)){
-				uint32_t count = count_matchs(dna, buffer, inita, initb);
-				if(count >= min){
-					matchs += count;
-					inita += count;
-					initb += count;
-				}
-				else inita++;
+	uint32_t tamanhoMaxCadeia = 10000, tamanhoMaxDNA = 101;
+
+	char cadeia[tamanhoMaxCadeia], *dnaPessoa;
+
+	string preload;
+
+
+	uint32_t quantidade, quantidadeMinima;
+
+	entrada >> quantidadeMinima >> preload >> quantidade;
+    dnaPessoa = (char*)preload.c_str();
+
+    uint32_t iguais, acertos;
+
+	seqDoenca **todasDoencas = new seqDoenca*[quantidade];
+
+    uint32_t tamanhoDNAPessoa, tamanhoCadeia, inicioDNA, inicioCadeia, quantidadeCada;
+	tamanhoDNAPessoa = strlen(dnaPessoa);
+
+	uint32_t contaAcertos, contaGenes;
+
+	for(uint32_t i = 0; i < quantidade; i++){
+
+		seqDoenca *genesDoenca = new seqDoenca;
+		entrada >> genesDoenca->nomeDoenca >> quantidadeCada;
+		contaGenes = 0;
+
+		for(uint32_t j = 0; j < quantidadeCada; ++j){
+            entrada >> cadeia;
+
+            iguais = 0;
+
+            inicioDNA = 0; inicioCadeia = 0;
+			tamanhoCadeia = strlen(cadeia);
+			while(inicioDNA < tamanhoDNAPessoa && inicioCadeia < tamanhoCadeia)
+            {
+				contaAcertos = contadorAcertos(dnaPessoa, cadeia, inicioDNA, inicioCadeia, tamanhoCadeia);
+
+				if(contaAcertos >= quantidadeMinima){
+					iguais += contaAcertos;
+					inicioDNA += contaAcertos;
+					inicioCadeia += contaAcertos;
+				}else inicioDNA++;
+
 			}
-			acertos = nround(100.00*matchs/strlen(buffer));
-			if(acertos >= 90) genes++;
+			acertos = (100.00*iguais/tamanhoCadeia) + 0.5;
+			if(acertos >= 90) contaGenes++;
 		}
-		a->acerto = nround(100.00*genes/n);
-		sequencias[i] = a;
+		genesDoenca->contador = (100.00*contaGenes/quantidadeCada) + 0.5;
+		todasDoencas[i] = genesDoenca;
 	}
-	
-	sequencias = countingsort(sequencias, cases, 101);
-	input.close();
-	for(uint32_t i = 0; i < cases; ++i)
-		output << sequencias[i]->codigo << "->" << sequencias[i]->acerto << "%\n";
-	output.close();
+	todasDoencas = countingsort(todasDoencas, quantidade, tamanhoMaxDNA);
+
+	for(uint32_t i = 0; i < quantidade; ++i)
+		saida << todasDoencas[i]->nomeDoenca << "->" << todasDoencas[i]->contador << "%\n";
+
+
+
+    entrada.close();
+	saida.close();
 	return 0;
 }
 
-uint32_t count_matchs(char *xs, char *ys, uint32_t initxs, uint32_t initys){
-	uint32_t count = 0;
-	uint32_t t = strlen(ys);
-	for(uint32_t i = 0; i < t && xs[i] != '\0'; ++i)
-		if(xs[initxs+i] != ys[initys+i])
-			return count;
-		else count++;
-	return count;
-}
 
-sequencia **countingsort(sequencia **v, uint32_t n, uint32_t k){
+seqDoenca **countingsort(seqDoenca **v, uint32_t n, uint32_t k){
 	uint32_t i;
 	uint32_t w[k];
 	for(i = 0; i < k; ++i)
 		w[i] = 0;
 	for(i = 0; i < n; ++i){
-		++w[v[i]->acerto];
+		++w[v[i]->contador];
 	}
 	uint32_t ant = 0;
 	for(i = k; i > 0; --i){
 		w[i-1] += ant;
 		ant = w[i-1];
 	}
-	sequencia **u =  new sequencia*[n];
+	seqDoenca **u =  new seqDoenca*[n];
 	for(i = n;	i > 0; --i)
-		u[--w[v[i-1]->acerto]] = v[i-1];
+		u[--w[v[i-1]->contador]] = v[i-1];
 	return u;
 }
+
+
+
