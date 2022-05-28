@@ -12,18 +12,18 @@ typedef struct{
 } seqDoenca;
 
 
-uint32_t contadorAcertos(char *dnaPessoa, char *cadeiaDoenca, uint32_t initxs, uint32_t initys, uint32_t tamanhoCadeia){
+uint32_t contadorAcertos(char *dnaPessoa, char *cadeiaDoenca, uint32_t inicioDNA, uint32_t inicioCadeia, uint32_t tamanhoCadeia){
 
 	uint32_t t = tamanhoCadeia, iteracao, acerto = 0;
 
 	for(iteracao = 0; iteracao < t ; iteracao ++ )
-		if(dnaPessoa[initxs + iteracao] != cadeiaDoenca[initys + iteracao])
+		if(dnaPessoa[inicioDNA + iteracao] != cadeiaDoenca[inicioCadeia + iteracao])
 			return acerto;
 		else acerto++;
 	return acerto;
 }
 uint32_t nround(float n){return n + 0.5;}
-seqDoenca **countingsort(seqDoenca**, uint32_t, uint32_t);
+seqDoenca **countingSort(seqDoenca**, uint32_t, uint32_t);
 
 
 int main(int argc, char *argv[]){
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]){
 		genesDoenca->contador = (100.00*contaGenes/quantidadeCada) + 0.5;
 		todasDoencas[i] = genesDoenca;
 	}
-	todasDoencas = countingsort(todasDoencas, quantidade, tamanhoMaxDNA);
+	todasDoencas = countingSort(todasDoencas, quantidade, tamanhoMaxDNA);
 
 	for(uint32_t i = 0; i < quantidade; ++i)
 		saida << todasDoencas[i]->nomeDoenca << "->" << todasDoencas[i]->contador << "%\n";
@@ -94,22 +94,22 @@ int main(int argc, char *argv[]){
 }
 
 
-seqDoenca **countingsort(seqDoenca **v, uint32_t n, uint32_t k){
+seqDoenca **countingSort(seqDoenca **todasDoencas, uint32_t n , uint32_t tamanhoMaxDNA){
 	uint32_t i;
-	uint32_t w[k];
-	for(i = 0; i < k; ++i)
-		w[i] = 0;
+	uint32_t cadeia[tamanhoMaxDNA];
+	for(i = 0; i < tamanhoMaxDNA; ++i)
+		cadeia[i] = 0;
 	for(i = 0; i < n; ++i){
-		++w[v[i]->contador];
+		cadeia[todasDoencas[i]->contador]++;
 	}
-	uint32_t ant = 0;
-	for(i = k; i > 0; --i){
-		w[i-1] += ant;
-		ant = w[i-1];
+	uint32_t anterior = 0;
+	for(i = tamanhoMaxDNA; i > 0; --i){
+		cadeia[i-1] += anterior;
+		anterior = cadeia[i-1];
 	}
 	seqDoenca **u =  new seqDoenca*[n];
 	for(i = n;	i > 0; --i)
-		u[--w[v[i-1]->contador]] = v[i-1];
+		u[--cadeia[todasDoencas[i-1]->contador]] = todasDoencas[i-1];
 	return u;
 }
 
