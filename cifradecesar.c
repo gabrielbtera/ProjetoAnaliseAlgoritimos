@@ -12,7 +12,7 @@ int main (){
 
     char palavra[20];
 
-    int rotacao = 4, cont = 0;
+    int rotacao = 11, cont = 0;
 
     char palavra2[26];
 
