@@ -6,11 +6,6 @@
 
 using namespace std;
 
-typedef struct{
-	string nomeDoenca;
-	uint32_t contador;
-} seqDoenca;
-
 
 uint32_t contadorAcertos(char *dnaPessoa, char *cadeiaDoenca, uint32_t inicioDNA, uint32_t inicioCadeia, uint32_t tamanhoCadeia){
 
@@ -22,56 +17,71 @@ uint32_t contadorAcertos(char *dnaPessoa, char *cadeiaDoenca, uint32_t inicioDNA
 		else acerto++;
 	return acerto;
 }
-//seqDoenca **countingSort(seqDoenca**, uint32_t, uint32_t);
 
-seqDoenca **countingSort(seqDoenca **todasDoencas, uint32_t n , uint32_t tamanhoMaxDNA){
-	uint32_t i;
+typedef struct{
+	string nomeDoenca;
+	uint32_t contador;
+} seqDoenca;
+
+
+
+void ordenacao(seqDoenca **todasDoencas,ofstream& saida,  uint32_t quantidade , uint32_t tamanhoMaxDNA){
+
 	uint32_t cadeia[tamanhoMaxDNA];
+	uint32_t i;
 	for(i = 0; i < tamanhoMaxDNA; ++i)
 		cadeia[i] = 0;
-	for(i = 0; i < n; ++i){
+
+	for(i = 0; i < quantidade; ++i){
 		cadeia[todasDoencas[i]->contador]++;
 	}
+
 	uint32_t anterior = 0;
 	for(i = tamanhoMaxDNA; i > 0; --i){
 		cadeia[i-1] += anterior;
 		anterior = cadeia[i-1];
 	}
-	seqDoenca **u =  new seqDoenca*[n];
-	for(i = n;	i > 0; --i)
+	seqDoenca **u =  new seqDoenca*[quantidade];
+	for(i = quantidade;	i > 0; --i){
 		u[--cadeia[todasDoencas[i-1]->contador]] = todasDoencas[i-1];
-	return u;
+
+
+
+
+	}
+
+	for(uint32_t i = 0; i < quantidade; i++)
+		saida << u[i]->nomeDoenca << "->" << u[i]->contador << "%\n";
 }
 
+float arredondar(uint32_t conta, uint32_t quantidade){
+    return (100.00*conta/quantidade) + 0.5;
 
+}
 
 int main(int argc, char *argv[]){
-	ifstream entrada("entrada2.txt");
-	ofstream saida("saida2.txt");
+
+
 
 	uint32_t tamanhoMaxCadeia = 10000, tamanhoMaxDNA = 101;
-
 	char cadeia[tamanhoMaxCadeia], *dnaPessoa;
-
-	string preload;
-
+	ifstream entrada("entrada2.txt");
 
 	uint32_t quantidade, quantidadeMinima;
-
+    string preload;
 	entrada >> quantidadeMinima >> preload >> quantidade;
-    dnaPessoa = (char*)preload.c_str();
 
-    uint32_t iguais, acertos;
-
-	seqDoenca **todasDoencas = new seqDoenca*[quantidade];
-
-    uint32_t tamanhoDNAPessoa, tamanhoCadeia, inicioDNA, inicioCadeia, quantidadeCada;
+  uint32_t tamanhoDNAPessoa, tamanhoCadeia, inicioDNA, inicioCadeia, quantidadeCada;
 
 
-	tamanhoDNAPessoa = strlen(dnaPessoa);
+	tamanhoDNAPessoa = strlen((char*)preload.c_str());
+
 
 	uint32_t contaAcertos, contaGenes;
+	uint32_t iguais;
 
+	seqDoenca **todasDoencas = new seqDoenca*[quantidade];
+	dnaPessoa = (char*)preload.c_str();
 	for(uint32_t i = 0; i < quantidade; i++){
 
 		seqDoenca *genesDoenca = new seqDoenca;
@@ -96,23 +106,18 @@ int main(int argc, char *argv[]){
 				}else inicioDNA++;
 
 			}
-			acertos = (100.00*iguais/tamanhoCadeia) + 0.5;
-			if(acertos >= 90) contaGenes++;
+
+			if(arredondar(iguais, tamanhoCadeia) >= 90){
+                contaGenes++;
+			}
 		}
-		genesDoenca->contador = (100.00*contaGenes/quantidadeCada) + 0.5;
+		genesDoenca->contador = arredondar(contaGenes, quantidadeCada);
 		todasDoencas[i] = genesDoenca;
 	}
-	todasDoencas = countingSort(todasDoencas, quantidade, tamanhoMaxDNA);
-    string codigoDoenca;
-    uint32_t totAcertos;
-	for(uint32_t i = 0; i < quantidade; i++)
-        codigoDoenca = todasDoencas[i]->nomeDoenca;
-        totAcertos = todasDoencas[i]->contador;
-		saida << codigoDoenca << "->" << totAcertos << "%\n";
+	ofstream saida("saida2.txt");
+	ordenacao(todasDoencas,saida, quantidade, tamanhoMaxDNA);
 
-
-
-    entrada.close();
+	entrada.close();
 	saida.close();
 	return 0;
 }
