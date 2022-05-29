@@ -22,8 +22,27 @@ uint32_t contadorAcertos(char *dnaPessoa, char *cadeiaDoenca, uint32_t inicioDNA
 		else acerto++;
 	return acerto;
 }
-uint32_t nround(float n){return n + 0.5;}
-seqDoenca **countingSort(seqDoenca**, uint32_t, uint32_t);
+//seqDoenca **countingSort(seqDoenca**, uint32_t, uint32_t);
+
+seqDoenca **countingSort(seqDoenca **todasDoencas, uint32_t n , uint32_t tamanhoMaxDNA){
+	uint32_t i;
+	uint32_t cadeia[tamanhoMaxDNA];
+	for(i = 0; i < tamanhoMaxDNA; ++i)
+		cadeia[i] = 0;
+	for(i = 0; i < n; ++i){
+		cadeia[todasDoencas[i]->contador]++;
+	}
+	uint32_t anterior = 0;
+	for(i = tamanhoMaxDNA; i > 0; --i){
+		cadeia[i-1] += anterior;
+		anterior = cadeia[i-1];
+	}
+	seqDoenca **u =  new seqDoenca*[n];
+	for(i = n;	i > 0; --i)
+		u[--cadeia[todasDoencas[i-1]->contador]] = todasDoencas[i-1];
+	return u;
+}
+
 
 
 int main(int argc, char *argv[]){
@@ -47,6 +66,8 @@ int main(int argc, char *argv[]){
 	seqDoenca **todasDoencas = new seqDoenca*[quantidade];
 
     uint32_t tamanhoDNAPessoa, tamanhoCadeia, inicioDNA, inicioCadeia, quantidadeCada;
+
+
 	tamanhoDNAPessoa = strlen(dnaPessoa);
 
 	uint32_t contaAcertos, contaGenes;
@@ -57,7 +78,7 @@ int main(int argc, char *argv[]){
 		entrada >> genesDoenca->nomeDoenca >> quantidadeCada;
 		contaGenes = 0;
 
-		for(uint32_t j = 0; j < quantidadeCada; ++j){
+		for(uint32_t y = 0; y < quantidadeCada; y++){
             entrada >> cadeia;
 
             iguais = 0;
@@ -82,9 +103,12 @@ int main(int argc, char *argv[]){
 		todasDoencas[i] = genesDoenca;
 	}
 	todasDoencas = countingSort(todasDoencas, quantidade, tamanhoMaxDNA);
-
-	for(uint32_t i = 0; i < quantidade; ++i)
-		saida << todasDoencas[i]->nomeDoenca << "->" << todasDoencas[i]->contador << "%\n";
+    string codigoDoenca;
+    uint32_t totAcertos;
+	for(uint32_t i = 0; i < quantidade; i++)
+        codigoDoenca = todasDoencas[i]->nomeDoenca;
+        totAcertos = todasDoencas[i]->contador;
+		saida << codigoDoenca << "->" << totAcertos << "%\n";
 
 
 
@@ -94,24 +118,9 @@ int main(int argc, char *argv[]){
 }
 
 
-seqDoenca **countingSort(seqDoenca **todasDoencas, uint32_t n , uint32_t tamanhoMaxDNA){
-	uint32_t i;
-	uint32_t cadeia[tamanhoMaxDNA];
-	for(i = 0; i < tamanhoMaxDNA; ++i)
-		cadeia[i] = 0;
-	for(i = 0; i < n; ++i){
-		cadeia[todasDoencas[i]->contador]++;
-	}
-	uint32_t anterior = 0;
-	for(i = tamanhoMaxDNA; i > 0; --i){
-		cadeia[i-1] += anterior;
-		anterior = cadeia[i-1];
-	}
-	seqDoenca **u =  new seqDoenca*[n];
-	for(i = n;	i > 0; --i)
-		u[--cadeia[todasDoencas[i-1]->contador]] = todasDoencas[i-1];
-	return u;
-}
+
+
+
 
 
 
